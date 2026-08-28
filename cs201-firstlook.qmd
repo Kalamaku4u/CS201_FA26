@@ -40,14 +40,123 @@ I don't recommend rearranging your pane layout at this time.
 
 Try running some code
 
-```{r}
+### Load Library
 
+```{r}
+library (ggplot2)
+
+```
+
+### Some Scripting
+
+```{r}
+quiz1 <- 88 # this is how to assign a value to a name
+quiz2 <- 94
+quiz3 <- 79
+
+quiz1
+
+# averaging
+(quiz1 + quiz2 + quiz3) / 3
+
+mean(quiz1 + quiz2 + quiz3) # not correct, adds everything up
+mean(quiz1, quiz2, quiz3) # wrong, only returns first arg
+mean(c(quiz1, quiz2, quiz3))
+
+list <- c(quiz1, quiz2, quiz3)
+
+mean(list)
+
+average <- mean(list)
+
+
+```
+
+```{r}
+scores <- c(88,94,79,91,85)
+scores
+
+mean(scores)
+min(scores)
+max(scores)
+length(scores)
+
+summary(scores)
+
+students <- c("a", "b", "c", "d", "e")
+students
+
+# bar plot
+barplot(scores, names.arg = students)
+
+barplot(scores, names.arg = students, ylim = c(0,100), main = "TITLE",
+xlab = "pupils", y = "what they got")
 
 ```
 
 ## Introducing `ggplot2`
 
+#### Make a dataframe
+
 ```{r}
+
+grades_df <- data.frame(student = students, score = scores)
+grades_df
+summary(grades_df)
+
+nrow(grades_df) # num of rows
+ncol(grades_df) # num of cols
+dim(grades_df) # df dimensions
+```
+
+#### Try ggplot
+
+```{r}
+
+ggplot(data = grades_df, aes(x = students, y = score)) # just the foundation
+
+
+ggplot(data = grades_df, aes(x = reorder(students, -score), y = score, group = 1)) +
+  geom_col(fill = "steelblue") +
+  geom_point() +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "OLALALAL",
+       subtitle = "walllalala",
+       x = "bombahs",
+       y = "cool stuff")
+
+
+```
+
+#### Mutate the dataframe
+
+```{r}
+library(tidyverse)
+
+grades_df <- grades_df |> 
+  mutate(study_hours = c(2,5,1,4,3))
+
+```
+
+#### Make a scatterplot
+
+```{r}
+
+ggplot(grades_df, aes(x = study_hours, y = score)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_col(fill = "purple") +
+  geom_line() +
+  theme_dark() +
+  labs(title = "WEHA",
+       subtitle = "Blueberry",
+       x = "SPONGAH",
+       y = "SAD:C")
+
+# cannot use fill (use color instead), don't use reorder
+
+
 
 ```
 
@@ -57,6 +166,19 @@ What result do you expect when you run this expression?
 
 ```{r}
 
+1 + 1 + 1
+
+quiz1 + quiz2
+
+1 + 1 + 1 - 3
+
+0.1 + 0.1 + 0.1 - 0.3
+
+options(scipen. = 999)
+
+print(0.1, 20)
+print(0.2, 20)
+print(0.5, 20)
 ```
 
 What did you observe?
