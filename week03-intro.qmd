@@ -186,6 +186,7 @@ class(mtcars$am_f)
 ggplot(data = mtcars, aes(x = am)) +
   geom_histogram()
 
+# cool
 ```
 
 Save, stage, commit, and push to GitHub!!
