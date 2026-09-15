@@ -1,6 +1,6 @@
 ---
 title: "Assignment 3: Wrangling penguins with dplyr"
-subtitle: "STUDENT NAME"
+subtitle: "Caide Filipo"
 author: "Amber Camp"
 date: "9/11/26"
 format: html
@@ -59,7 +59,10 @@ Hints: You can always check your work using `unique()`. It'll tell you the uniqu
 ```{r, messages=FALSE}
 unique(penguins$species) # an example of how to use unique()
 
-
+pengo <- penguins
+pengo <- pengo %>%
+  filter(sex == "FEMALE", culmen_length_mm >= 39, island != "Biscoe")
+view(pengo)
 ```
 
 ## 4. `select()`
@@ -70,8 +73,10 @@ Assign this to a new object name so that you do not overwrite the original data!
 
 ```{r, message=FALSE, warning=FALSE}
 
-
-
+selecto <- penguins
+selecto <- selecto %>%
+  select(-comments)
+view(selecto)
 ```
 
 ## 5. `relocate()`
@@ -81,8 +86,10 @@ Starting with `penguins`, move the `individual_id` variable to the third column 
 Don't forget to assign to a new object name!
 
 ```{r, message=FALSE, warning=FALSE}
-
-
+relocato <- penguins
+relocato <- relocato %>%
+  relocate(individual_id, .before = species)
+view(relocato)
 ```
 
 ## 6. `rename()`
@@ -93,7 +100,10 @@ Don't forget to assign to a new object name.
 
 ```{r, message=FALSE, warning=FALSE}
 
-
+renamo <- penguins
+renamo <- renamo %>%
+  rename(island_name = island)
+view(renamo)
 ```
 
 ## 7. `mutate()`
@@ -101,8 +111,10 @@ Don't forget to assign to a new object name.
 Copy `penguins` to a new object called `mutate` and add a column that displays flipper length as kilometers. Call that new column `flippometers`.
 
 ```{r, message=FALSE, warning=FALSE}
-
-
+mutate <- penguins
+mutate <- mutate %>%
+  mutate(flippometers = flipper_length_mm / 1000000)
+view(mutate)
 ```
 
 ## 8. `group_by() |> summarize()`
@@ -114,7 +126,16 @@ Create a new dataframe called `number8`. Take `penguins`, group the data by isla
 Apply `na.rm` as needed.
 
 ```{r, message=FALSE, warning=FALSE}
+number8 <- penguins
+number8 <- number8 %>%
+  group_by(island, species)
 
+summary <- number8 %>%
+  summarise(
+    culmen_depth_mean = mean(culmen_depth_mm,  na.rm = TRUE),
+    culmen_length_mm = mean(culmen_length_mm,  na.rm = TRUE)
+  ) 
+view(summary)
 
 ```
 
@@ -124,7 +145,12 @@ Starting with `penguins`, only keep observations for Biscoe island, group by `sp
 
 ```{r, message=FALSE, warning=FALSE}
 
-
+across <- penguins
+across <- across %>%
+  filter(island == "Biscoe") %>%
+  group_by(species) %>%
+  summarise(across(where(is.numeric), max, na.rm = TRUE))
+view(across)
 ```
 
 ## 10. `count()`
@@ -132,8 +158,11 @@ Starting with `penguins`, only keep observations for Biscoe island, group by `sp
 Starting with `penguins`, create a new object called `count` that filters out all `sex` values other than `MALE` and `FEMALE`. Then, in the same piped function, display the count of all penguins by `island`, `species`, and `sex`.
 
 ```{r, message=FALSE, warning=FALSE}
+count <- penguins %>%
+  filter(sex %in% c("MALE", "FEMALE")) %>%
+  count(island, species, sex)
 
-
+count
 ```
 
 ## 11. `case_when()`
@@ -148,7 +177,13 @@ Use `summary(as.factor(case_when$size))` to check your work
 
 ```{r, message=FALSE, warning=FALSE}
 
-
+case_when <- penguins
+case_when <- case_when %>%
+  mutate(size = case_when(
+    body_mass_g >= 4050 ~ "big",
+    body_mass_g < 4050 ~ "small")
+    )
+view(case_when)
 ```
 
 ## 12. Final Boss 🐧 (up to 2.5 pts extra credit)
@@ -191,6 +226,24 @@ Create a new object called `final_boss` that satisfies all of the following:
 
 ```{r, message=FALSE, warning=FALSE}
 
+final_boss <- penguins
+final_boss <- final_boss %>%
+  filter(sex == "FEMALE", na.rm = TRUE, island != "Torgersen") %>%
+  select(species, island, flipper_length_mm, body_mass_g) %>%
+  mutate(flipper_rank = case_when(
+    flipper_length_mm < 190 ~ "short",
+    flipper_length_mm <= 210 & flipper_length_mm >= 190 ~ "medium",
+    flipper_length_mm > 210 ~ "long"
+  )) %>%
+  group_by(species, island, flipper_rank) %>%
+  summarise(
+    avg_mass_g = round(mean(body_mass_g))
+  )
+    
+view(final_boss)
+```
+
+```{r}
 
 ```
 
