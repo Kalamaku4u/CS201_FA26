@@ -169,16 +169,24 @@ Note what a boxplot does *not* show you: it has no idea whether your data is one
 #| label: build various box plots
 
 # build a box plot of type_1 and their hp
-
+ggplot(data = pokedata, aes(x = type_1, y =hp)) +
+  geom_boxplot()
 
 # reorder type_1 by median hp
-
+ggplot(data = pokedata, aes(x = fct_reorder(type_1, hp, median), y =hp)) +
+  geom_boxplot()
 
 # add individual points
-
+ggplot(data = pokedata, aes(x = fct_reorder(type_1, hp, median), y =hp)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.3, width = 0.2, color = "purple")
 
 # facet wrap by generation + rotate axis labels
-
+ggplot(data = pokedata, aes(x = fct_reorder(type_1, hp, median), y =hp)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.3, width = 0.2, color = "purple") +
+  facet_wrap(~generation) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
 
@@ -189,7 +197,9 @@ That third plot (box plot plus `geom_jitter()`) is a small, cheap insurance poli
 ```{r}
 #| label: first violin plot
 
-
+ggplot(data = pokedata, aes(x = type_1, y =hp)) +
+  geom_violin( quantiles = 0.5, quantile.linetype = 1) +
+  geom_boxplot(alpha = 0.5, width = 0.5)
 ```
 
 ## Tip!
@@ -205,9 +215,9 @@ ggplot(pokedata, aes(x = type_2)) +
 
 # filter out NA values in type_2 and pipe directly to ggplot
 pokedata |> 
-  #### |>  # filter out NA values, pipe directly to ggplot
-  #### + # ggplot still uses + as a layer operator
-  ####
+ filter(!is.na(type_2)) |>  # filter out NA values, pipe directly to ggplot
+  ggplot(aes(x = type_2)) + # ggplot still uses + as a layer operator
+  geom_bar()
 
 # another way to do this:
 ggplot(na.omit(pokedata), aes(x = type_2)) +
@@ -227,7 +237,19 @@ Create a faceted bar plot that displays `type_1` and `type_2` information.
 #| label: challenge 1: faceted stacked bar plot
 
 
+ggplot(data = pokedata, aes(x = type_2, fill = type_2)) +
+  geom_bar() +
+  facet_wrap(~type_1) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+
+```
+
+```{r}
+ggplot(data = na.omit(pokedata), aes(x = type_2, fill = generation)) +
+  geom_bar() +
+  facet_wrap(~type_1) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 5))
 ```
 
 ## Covariation
