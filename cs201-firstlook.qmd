@@ -183,7 +183,7 @@ print(0.5, 20)
 
 What did you observe?
 
-> Answer:
+> Answer: The arithmetic is off.
 
 Why do you think this is happening? (You can look online for help)
 
