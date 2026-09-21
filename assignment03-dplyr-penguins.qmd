@@ -244,7 +244,7 @@ view(final_boss)
 ```
 
 ```{r}
-
+#!is.na(variable) instead of na.rm=true
 ```
 
 # Push to GitHub AND submit link on Canvas!!

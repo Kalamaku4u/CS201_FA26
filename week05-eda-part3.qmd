@@ -203,6 +203,7 @@ diamonds |>
   ggplot(aes(x = color, y = cut)) +
   geom_tile(aes(fill = n))
 
+#threeway graph; category vs category overlayed with color!
 ```
 
 ## Summary tables are a deliverable too
@@ -292,15 +293,15 @@ A mosaic plot is a graphical representation of the relationship between two or m
 
 ```{r}
 
-# install.packages("vcd") # do this first!
-# library(vcd)
+install.packages("vcd") # do this first!
+library(vcd)
 
-# make a contingency table
-# diamond_table <- xtabs(~ cut + color, data = diamonds)
+#make a contingency table
+diamond_table <- xtabs(~ cut + color, data = diamonds)
 
 # build the mosaic plot
-# mosaic(diamond_table, shade = TRUE, legend = TRUE,
-       # labeling_args = list(set_varnames = c(cut = "Cut", color = "Color")))
+ mosaic(diamond_table, shade = TRUE, legend = TRUE,
+       labeling_args = list(set_varnames = c(cut = "Cut", color = "Color")))
 
 ```
 

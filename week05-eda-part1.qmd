@@ -19,7 +19,7 @@ Run this once, then comment it back out. You don't want to reinstall a package e
 ```{r, eval=FALSE}\}
 #| label: install new package
 
-install.packages("datasauRus")
+#install.packages("datasauRus")
 ```
 
 ```{r, message=FALSE}
@@ -53,7 +53,11 @@ Description: This is Pokemon data for 721 pokemon and their stats.
 
 How many observations (rows) are there?
 
+800
+
 How many variables (columns) are there?
+
+13
 
 ### skimr: Quick overview
 
@@ -123,9 +127,15 @@ summary(pokedata$legendary)
 
 How many categorical variables are there?
 
+5
+
 How many numeric variables are there?
 
+7
+
 How many legendary?
+
+65
 
 ## Describing your data with numbers
 
@@ -180,7 +190,9 @@ pokedata |>
 
 **Question!** The mean and the median are not the same number here. What does it mean when the mean is *larger* than the median?
 
-Answer:
+Answer: There are more higher special attacks than 65
+
+skewed to the right.
 
 ## Variation and Covariation
 
@@ -196,7 +208,7 @@ Let's start by looking at the distribution of Pokemon by Special Attack (`sp_atk
 #| label: distribution histogram
 
 ggplot(pokedata, aes(x = sp_atk)) +
-  geom_histogram(binwidth = 10)
+  geom_histogram(binwidth = 5)
 
 ```
 
@@ -238,8 +250,8 @@ pokedata_0_100 <- pokedata |>
   filter(sp_atk <= 100)
 
 ggplot(pokedata_0_100, aes(x = sp_atk)) +
-  geom_histogram(binwidth = 1) +
-  scale_x_continuous(breaks = seq(from = 0, to = 100, by = 1)) +
+  geom_histogram(binwidth = 5) +
+  scale_x_continuous(breaks = seq(from = 0, to = 100, by = 5)) +
   theme_bw()
 ```
 
@@ -264,7 +276,7 @@ Define a window to take a closer look. You can also add an `xlim()` argument.
 
 ggplot(pokedata, aes(x = sp_atk)) + 
   geom_histogram() +
-  coord_cartesian(ylim = c(0, 100), xlim = c(0, 200))
+  coord_cartesian(ylim = c(0, 25), xlim = c(190, 200))
 
 ```
 
@@ -314,7 +326,8 @@ Is `sp_def` more or less skewed than `sp_atk`? How can you tell from the numbers
 #| label: scatter plot
 
 ggplot(pokedata, aes(x = sp_atk, y = sp_def)) + 
-  geom_point()
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE)
 ```
 
 We can also put a number on that relationship. The **correlation coefficient** ranges from -1 to 1: values near 1 mean the two variables increase together, values near -1 mean one goes up as the other goes down, and values near 0 mean there's no linear relationship.
@@ -327,6 +340,8 @@ cor(pokedata$sp_atk, pokedata$sp_def)
 # or, in the tidyverse style
 pokedata |> 
   summarise(correlation = cor(sp_atk, sp_def))
+
+#squaring correlation value gives % of coverage.
 ```
 
 Does that number match what you see in the scatterplot?
@@ -364,6 +379,7 @@ def_boxplot
 ## Extra Credit!
 
 - Share with the class how to read a boxplot (1pt each!)
+- first line is 25%, middle is 50% (and the median) and end of the box is 75% of the data. end of lines are minimum and maximum. dots are outliers.
 
 ------------------------------------------------------------------------
 

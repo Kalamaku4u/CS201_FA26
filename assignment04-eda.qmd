@@ -1,7 +1,7 @@
 ---
 title: "Assignment 4: Exploratory Data Analysis"
-author: "Your Name"
-date: "`r Sys.Date()`"
+author: "Caide Filipo"
+date: "`r Sys.Date(9/18/26)`"
 format: html
 editor: visual
 ---
@@ -30,7 +30,7 @@ Part 1 is worth a total of 1 point, and Part 2 is worth 4 points (1 point for ea
 ```{r, message=FALSE}
 library(tidyverse)
 
-# mydata <- read_csv("data/your_dataset.csv")
+mydata <- read_csv("data/student_exam_performance.csv")
 
 ```
 
@@ -47,7 +47,8 @@ Description:
 Use some of the strategies you've learned in this class or picked up elsewhere to summarize and quickly explore your data.
 
 ```{r}
-
+view(mydata)
+summary(mydata)
 ```
 
 ### Summary stats
@@ -63,10 +64,32 @@ Before you make plots, you must also:
   - Remember to use `na.rm = TRUE` if you have missing values that affect summaries!
 
 ```{r}
+install.packages("skimr")
+
+count <- mydata
+count <- count %>%
+  count(class_participation)
+
+count
+
+
+summarise <- mydata
+summarise <- summarise %>% 
+  summarise(
+    mean   = mean(previous_exam_score, na.rm = TRUE),
+    median = median(previous_exam_score, na.rm = TRUE),
+    sd     = sd(previous_exam_score, na.rm = TRUE),
+    min    = min(previous_exam_score, na.rm = TRUE),
+    max    = max(previous_exam_score, na.rm = TRUE)
+  )
+view(summarise)
+
 
 ```
 
 Write 2–3 sentences here: What do the category counts tell you? What does the numeric summary show about spread, center, or outliers?
+
+The category counts tell me that a graph of the participation level would have a "mountain" instead of a "valley". The numerical data shows that the minimum possible grade is a 30 and that the maximum would be a 100. A graph of the data would be nearly symmetrical as the mean and median are almost identical and that the main curve would be at \~70.
 
 ## Part 2: Visualize Your Data
 
@@ -86,45 +109,81 @@ Use the EDA Part 3 notes as your reference. Since this is an EDA assignment, you
 
 ```{r}
 # insert code here
-
+ggplot(mydata, aes(x = previous_exam_score)) +
+  geom_histogram(binwidth = 1) +
+  theme_bw() +
+  labs(title = "Exam Scores",
+       subtitle = "Undergraduate and HS level performance on exams",
+       x = "Previous Exam Score")
 ```
 
-Question this plot answers:
+Question this plot answers: How were students doing before implementing studying techniques, preps, and limiting distractions?
 
-Interpretation:
+Interpretation: Based on the resulting graph, the general body of the graph is centered on the 70 mark meaning a majority of students are passing. The level of higher achievers and lower achievers is around the same with a noticeable bump in those passing with a score of a 100.
 
 ### Plot 2
 
 ```{r}
 # insert code here
+ggplot(mydata, aes(x = study_hours_per_day, y = exam_score)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +
+  theme_bw() +
+  labs(
+    title = "Study Hours vs. Final Exam Score",
+    x = "Study Hours per Day",
+    y = "Exam Score"
+  )
 
 ```
 
-Question this plot answers:
+Question this plot answers: What effect does how many hours studied have on the final exam score?
 
-Interpretation:
+Interpretation: Generally, the more hours you study per day, the higher your exam score would be. But, any studying after an hour seems to have a higher chance of scoring a 100.
 
 ### Plot 3
 
 ```{r}
 # insert code here
 
+mydata$performance_level <- factor(
+  mydata$performance_level, 
+  levels = c("Low", "Medium", "High")
+)
+
+
+mydata %>% 
+  drop_na(performance_level, sleep_quality) %>% 
+  ggplot(aes(x = performance_level, y = fct_rev(sleep_quality))) +
+  geom_count( color = "purple") +
+  theme_bw() +
+  labs(
+    title = "Performance Level vs. Sleep Quality",
+    x = "Performance Level",
+    y = "Sleep Quality"
+  )
 ```
 
-Question this plot answers:
+Question this plot answers: What affect does the quality of your sleep have on the performance during an exam?
 
-Interpretation:
+Interpretation: Based on the graph, majority of students taking the exam has poor to mediocre quality of sleep. Though, those with higher qualities of sleep tend to perform better on the exam.
 
 ### Plot 4
 
 ```{r}
 # insert code here
-
+ggplot(mydata, aes(x = study_method, y = exam_score, fill = study_method)) +
+  geom_violin(alpha = 0.5, show.legend = FALSE) +
+  geom_boxplot(width = 0.1, color = "black", alpha = 0.7, show.legend = FALSE) +
+  labs(
+    title = "Exam Score Density and Spread by Study Habit Category",
+    x = "Study Habit Category",
+    y = "Exam Score"
+  )
 ```
 
-Question this plot answers:
+Question this plot answers: Which study method is most reliable to get good grades?
 
-Interpretation:
+Interpretation: These graphs for the different study methods look hard to distinguish. Doing practice tests seem to be the most predicting of a passing score as the distribution is narrowest.
 
 ------------------------------------------------------------------------
 

@@ -337,7 +337,9 @@ plotname <- ggplot(data = penguins_data, aes(x = culmen_depth_mm, y = body_mass_
        x = "Culmen Length (mm)",
        y = "Number of Penguins")
 
+#plotly
 ggplotly(plotname)
+
 ```
 
 ## Push to GitHub!
