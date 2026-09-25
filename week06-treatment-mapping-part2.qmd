@@ -241,7 +241,7 @@ girafe(ggobj = completed_treatment_map_int) # check your spelling!
 
 # FRIDAY
 
-### Clean up the color binning
+###  Clean up the color binning
 
 Right now our fill is a continuous gradient, which makes it hard to tell similar states apart. Let's group the percentages into bins instead.
 
@@ -251,11 +251,12 @@ Adding color bins, based on manual/equal interval breaks. (There are more advanc
 #| label: add-bins
 
 mapping_data <- mapping_data |> 
-  mutate(percentage_bin = cut(percentage_completed, breaks=c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)))
+  mutate(percentage_bin = cut(percentage_completed, breaks=c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), inlude.lowest = TRUE))
 
 # check out the column you just added
 head(mapping_data)
 
+?cut
 ```
 
 `cut()` reads as: "take this numeric column and sort each value into one of these labeled ranges." What does a bin label like `(40,50]` mean?
@@ -277,7 +278,7 @@ percent_complete_binned_int <- ggplot(mapping_data) +
   labs(fill = "% of Completed Treatment Episodes",
        title = "Completed Treatment Episodes by State",
        subtitle = "TEDS-D 2024 (SAMHSA)") +
-  scale_fill_viridis_d(option = "mako") + 
+  scale_fill_viridis_d(option = "mako", direction = -1) + 
   coord_sf(datum = NA) +
   theme_minimal() +
   theme(panel.background = element_blank(),
@@ -300,5 +301,66 @@ Notice anything weird with the above?? Try both to identify the problem and to f
 ### Sandbox
 
 ```{r}
+mapping_data <- mapping_data |> 
+  mutate(percentage_bin = cut(percentage_completed, breaks=c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), right = TRUE))
 
+# check out the column you just added
+head(mapping_data)
+
+percent_complete_binned_int <- ggplot(mapping_data) +
+  geom_sf_interactive(
+    aes(geometry = geometry,
+        fill = percentage_bin,
+        tooltip = paste("State FIPS:", stfips, # add state abbreviation if you want
+                        "<br>Completed:", round(percentage_completed,2), "%")),
+    color = "#000000", linewidth = 0.25) +
+  labs(fill = "% of Completed Treatment Episodes",
+       title = "Completed Treatment Episodes by State",
+       subtitle = "TEDS-D 2024 (SAMHSA)") +
+  scale_fill_viridis_d(option = "magma", direction = -1) + 
+  coord_sf(datum = NA) +
+  theme_minimal() +
+  theme(panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.text = element_text(size = 4),
+        legend.title = element_text(size = 5),
+        strip.text = element_text(size = 4),
+        geom_sf_label(na.rm=FALSE))
+
+girafe(ggobj = percent_complete_binned_int)
+```
+
+```{r}
+mapping_data <- mapping_data |> 
+  mutate(percentage_bin = cut(percentage_completed, breaks=c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)),
+  
+
+# check out the column you just added
+head(mapping_data)
+
+percent_complete_binned_int <- ggplot(mapping_data) +
+  geom_sf_interactive(
+    aes(geometry = geometry,
+        fill = percentage_bin,
+        tooltip = paste("State FIPS:", stfips, # add state abbreviation if you want
+                        "<br>Completed:", round(percentage_completed,2), "%")),
+    color = "#000000", linewidth = 0.25) +
+  labs(fill = "% of Completed Treatment Episodes",
+       title = "Completed Treatment Episodes by State",
+       subtitle = "TEDS-D 2024 (SAMHSA)") +
+  scale_fill_viridis_d(option = "magma", direction = -1, na.value = "blue") + 
+  coord_sf(datum = NA) +
+  theme_minimal() +
+  theme(panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.text = element_text(size = 4),
+        legend.title = element_text(size = 5),
+        strip.text = element_text(size = 4),
+        geom_sf_label(na.rm=FALSE))
+
+girafe(ggobj = percent_complete_binned_int)
 ```
