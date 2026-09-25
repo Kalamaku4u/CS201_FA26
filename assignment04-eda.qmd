@@ -152,8 +152,7 @@ mydata$performance_level <- factor(
 
 
 mydata %>% 
-  drop_na(performance_level, sleep_quality) %>% 
-  ggplot(aes(x = performance_level, y = fct_rev(sleep_quality))) +
+  ggplot(aes(x = performance_level,  y = fct_rev(sleep_quality)),  na.rm=TRUE) +
   geom_count( color = "purple") +
   theme_bw() +
   labs(
